@@ -16,6 +16,11 @@ set -euo pipefail
 
 log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*"; }
 
+# Keep-alive heartbeat: prevents RunPod from killing pod during long builds
+(while true; do sleep 60; nvidia-smi > /dev/null 2>&1; done) &
+KEEPALIVE_PID=$!
+trap "kill ${KEEPALIVE_PID} 2>/dev/null" EXIT
+
 MODE="${MODE:-mos}"
 SEED="${SEED:-1337}"
 MAX_WALLCLOCK_SECONDS="${MAX_WALLCLOCK_SECONDS:-600}"
