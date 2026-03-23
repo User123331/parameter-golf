@@ -28,7 +28,9 @@ if ! python3 -c "from flash_attn_interface import flash_attn_func" 2>/dev/null; 
         git clone https://github.com/Dao-AILab/flash-attention.git "$HOME/flash-attention"
     fi
 
-    SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")
+    # Use user site-packages (writable without sudo)
+    SITE_PACKAGES=$(python3 -c "import site; print(site.getusersitepackages())")
+    mkdir -p "${SITE_PACKAGES}"
 
     # Copy pre-compiled .so
     mkdir -p "${SITE_PACKAGES}/flash_attn_3"
